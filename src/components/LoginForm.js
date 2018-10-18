@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Text, View } from 'react-native';
-import {Card, CardItem, Input, Button} from './common';
+import {Card, CardItem, Input, Button, Spinner} from './common';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
 
@@ -11,9 +11,15 @@ class LoginForm extends Component {
   onPasswordChange = text => {
     this.props.passwordChanged(text);
   }
-  render() {
+
+  renderButton = () => {
     const { email, password } = this.props;
+    return this.props.loading ? <View style={{flex: 1}}><Spinner /></View> : <Button onButtonPress={() =>this.props.loginUser(email, password)}> Login</Button>;
+  }
+  render() {
+    const { email, password, error } = this.props;
     return (
+   
         <Card>
           <CardItem>
             <Input
@@ -32,16 +38,22 @@ class LoginForm extends Component {
               value={password}
             />
           </CardItem>
+          <View>
+            <Text style={styles.error}>{error}</Text>
+          </View>
           <CardItem>
-            <Button onButtonPress={() =>this.props.loginUser(email, password)}> Login</Button>
+            {this.renderButton()}
           </CardItem>
         </Card>
+
     );
   }
 }
 const mapStateToProps = state => ({
   email: state.auth.email,
   password: state.auth.password,
+  error: state.auth.error,
+  loading: state.auth.loading,
 })
 const mapDispatchToProps = {
   emailChanged: actions.emailChanged,
@@ -49,4 +61,11 @@ const mapDispatchToProps = {
   loginUser: actions.loginUser,
 }
 
+const styles = {
+  error: {
+    fontSize: 20,
+    alignSelf: 'center',
+    color: 'red',
+  }
+}
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
