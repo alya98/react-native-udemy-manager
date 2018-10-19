@@ -18,7 +18,7 @@ const styles = {
     paddingTop: 10,
   },
 	button: {
-    width: '100%',
+    flex: 1,
     alignSelf: 'stretch',
     alignItems: 'center',
     backgroundColor: '#fff',
